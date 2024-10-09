@@ -1,0 +1,169 @@
+#include <stdio.h>
+#include <stdlib.h>
+struct no
+{
+    int info;
+    struct no *prox;
+};
+typedef struct no No;
+ 
+No *insere_inicio(No *L, int valor);
+No *cria_no(int valor);
+No *insere_fim (No *a, int num);
+void percorre(No *a, No *b, int n, int m);
+void uniao(No *a, No *b);
+void mostra_lista(No *L);
+ 
+int main()
+{
+    No *a= NULL;
+    No *b= NULL;
+    int n, m;
+    scanf("%d %d", &n, &m);
+    //printf("numeros\n");
+    for(int i=0; i<n; i++)
+    {
+        int num;
+        scanf("%d", &num);
+        a = insere_fim(a, num);
+    }
+    for(int i=0; i<m; i++)
+    {
+        int num;
+        scanf("%d", &num);
+        b = insere_fim(b, num);
+    }
+ 
+    percorre(a,b,n,m);
+    uniao(a,b);
+ 
+    return 0;
+}
+void uniao(No *a, No *b)
+{
+    No *resp = NULL;
+    No * aux_a = a;
+    No * aux_b = b;
+ 
+   while((aux_a !=NULL) && (aux_b != NULL))
+   {
+ 
+       if(aux_a -> info > aux_b-> info)
+       {
+           resp = insere_fim(resp, aux_b->info);
+           aux_b = aux_b->prox;
+       }
+       else if(aux_a -> info < aux_b -> info)
+       {
+           resp = insere_fim(resp, aux_a->info);
+           aux_a = aux_a->prox;
+       }
+       else if(aux_a->info == aux_b->info)
+       {
+          resp = insere_fim(resp, aux_a->info);
+           aux_a = aux_a->prox;
+           aux_b = aux_b->prox;
+       }
+    }
+          while(aux_a != NULL)
+       {
+           resp = insere_fim(resp, aux_a->info);
+            aux_a = aux_a->prox;
+       }
+       while(aux_b != NULL)
+       {
+           resp = insere_fim(resp, aux_b->info);
+            aux_b = aux_b->prox;
+       }
+ 
+       // mostrar
+       while (resp != NULL)
+    {
+        printf("%d ", resp->info);
+        resp = resp->prox;
+ 
+    }
+    printf("\n");
+ 
+}
+No *insere_fim (No *a, int num)
+{
+    No *novo= cria_no(num);
+    No *aux=a;
+    if (a == NULL)
+    {
+        a = novo;
+    }
+    else
+    {
+        while(aux -> prox !=NULL)
+        {
+            aux= aux->prox;
+        }
+        aux ->prox =novo;
+    }
+    return a;
+ 
+}
+void percorre(No *a, No *b, int n, int m)
+{
+    int num =0;
+    No *aux = NULL;
+    aux =a;
+    No *aux2 = NULL;
+    aux2 =b;
+    No *resp = NULL;
+    while(num != m)
+   {
+       aux = a;
+    for(int i=0; i<n; i++)
+    {
+        if(aux->info == aux2 ->info && aux!= NULL)
+        {
+            resp = insere_fim(resp, aux2->info);
+        }
+        aux = aux->prox;
+    }
+    aux2 = aux2 -> prox;
+    num++;
+    }
+    mostra_lista(resp);
+ 
+}
+No *cria_no(int valor)
+{
+    No *novo;
+    novo = (No *)malloc(sizeof(No));
+ 
+    // inicializar campos
+    novo->prox = NULL;
+    novo->info = valor;
+ 
+    return novo;
+}
+No *insere_inicio(No *L, int valor)
+{
+    No *nuevo = cria_no(valor);
+    if (L == NULL)
+    {
+        L = nuevo;
+    }
+    else
+    {
+        nuevo->prox = L;
+        L = nuevo;
+    }
+    return L;
+}
+void mostra_lista(No *L)
+{
+ 
+    while (L != NULL)
+    {
+        printf("%d ", L->info);
+        L = L->prox;
+ 
+    }
+    printf("\n");
+}
+ 
