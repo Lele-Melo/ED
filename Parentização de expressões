@@ -1,0 +1,189 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+ 
+struct no
+{
+    int info;
+    struct no *prox;
+};
+typedef struct no No;
+typedef No Pilha;
+ 
+Pilha* cria_pilha();
+Pilha* push(Pilha* p, int valor);
+No* pop(Pilha **p);
+int top(Pilha *p);
+int eh_pilha_vazia(Pilha *p);
+Pilha* libera_pilha();
+No *insere_inicio(No *L, int valor);
+No *cria_no(int valor);
+No *remove_inicio(No **L);
+void mostra_lista(No *L);
+ 
+int main()
+{
+    Pilha *p = cria_pilha();
+ 
+    int num=0;
+    char num2[1001];
+    int qtd=0;
+    int qtd2=0;
+    No* aux;
+    int aux2=0;
+    scanf("%d", &num);
+    for(int i=0; i<num; i++)
+    {
+        getchar();
+        scanf("%s", num2);
+        qtd=strlen(num2);
+        for(int j = 0; j < qtd; j++)
+        {
+            while(qtd2 == 0)
+            {
+                if(num2[j] == '(')
+                {
+                    p = push(p, 1);
+                }
+                if(j==qtd || num2[j] == ')')
+                {
+                    qtd2++;
+                }
+                if(num2[j] != ')')
+                j++;
+            }
+            if(num2[j] == ')' )
+            {
+               if(eh_pilha_vazia(p) ==1)
+               {
+                   aux2++;
+               }
+               else
+               aux = pop(&p);
+              // free(pop(&p));
+ 
+            }
+ 
+        }
+ 
+ 
+        if(eh_pilha_vazia(p) && aux2==0)
+        {
+            printf("correta\n");
+        }
+        else
+        {
+            printf("incorreta\n");
+           // printf("%d", aux2);
+           // mostra_lista(p);
+        }
+        aux2=0;
+        qtd2=0;
+        p = libera_pilha(p);
+    }
+   /* aux = pop(&p);
+    printf("%d\n", aux->info);
+    printf("%d\n",top(p));
+    */
+ 
+   // p = libera_pilha(p);
+    return 0;
+}
+void mostra_lista(No *P)
+{
+    No* L=P;
+    while (L != NULL)
+    {
+        printf("%d ", L->info);
+        L = L->prox;
+ 
+    }
+    printf("\n");
+}
+ 
+ 
+ 
+No* remove_inicio(No **L)
+{
+    No *aux = *L;
+ 
+    if (*L != NULL)
+    {
+        *L = (*L)->prox;
+    }
+    return aux;
+}
+ 
+No *cria_no(int valor)
+{
+    No *novo;
+    novo = (No *)malloc(sizeof(No));
+ 
+    // inicializar campos
+    novo->prox = NULL;
+    novo->info = valor;
+ 
+    return novo;
+}
+ 
+No *insere_inicio(No *L, int valor)
+{
+    No *nuevo = cria_no(valor);
+    if (L == NULL)
+    {
+        L = nuevo;
+    }
+    else
+    {
+        nuevo->prox = L;
+        L = nuevo;
+    }
+    return L;
+}
+ 
+ 
+Pilha* cria_pilha()
+{
+    Pilha* p = NULL;
+    return p;
+}
+ 
+Pilha* push(Pilha* p, int valor)
+{
+   p = insere_inicio(p,valor);
+   return p;
+}
+No* pop(Pilha **p)
+{
+    return remove_inicio(p);
+}
+ 
+int top(Pilha *p)
+{
+    int dado = 0;
+    if (!eh_pilha_vazia(p))
+    {
+        dado = p->info;
+    }
+    return dado;
+}
+int eh_pilha_vazia(Pilha *p)
+{
+    int res = 1;
+    if (p != NULL)
+    {
+        res=0;
+    }
+    return res;
+}
+ 
+Pilha* libera_pilha(Pilha *p)
+{
+    No* aux;
+    while (!eh_pilha_vazia(p))
+    {
+        aux = pop(&p);
+        free(aux);
+    }
+    return NULL;
+}
