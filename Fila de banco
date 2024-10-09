@@ -1,0 +1,208 @@
+#include <stdio.h>
+#include <stdlib.h>
+ 
+struct nod {
+    int info;
+    int info2;
+    struct nod *prox;
+    struct nod *ant;
+};
+typedef struct nod Nod;
+ 
+struct listad {
+    Nod *ini, *fim;
+};
+typedef struct listad Listad;
+typedef Listad Fila;
+ 
+Fila* cria_fila();
+void enqueue(Fila *f, int valor, int valor2);
+Nod* dequeue(Fila *f);
+int consulta_inicio(Fila *f);
+int consulta_inicio2(Fila *f);
+int fila_vazia(Fila *f);
+Fila* libera_fila(Fila *f);
+Listad* cria_listad();
+Nod* cria_nod(int info, int info2);
+//void insere_inicio_listad(int info, Listad *L);
+void insere_fim_listad(int info,int info2, Listad *L);
+void mostra_listad(Listad *L);
+Listad* libera_listad(Listad *L);
+Nod* remove_inicio(Listad *L);
+int inicio(Listad *L);
+int inicio2(Listad *L);
+ 
+int main() {
+    Fila *f = cria_fila();
+    int c=0, n=0, t=0, d=0;
+    scanf("%d %d", &c, &n);
+    for(int i=0; i<n; i++)
+    {
+        scanf("%d %d", &t, &d);
+        enqueue(f, t, d);
+    }
+    int v[c];
+    for(int i=0; i<c; i++)
+    {
+        v[i]=0;
+    }
+    int menor=0;
+    int j=0;
+   /* enqueue(f, 10);
+    enqueue(f, 5);
+    enqueue(f, 30);
+    enqueue(f, 15);*/
+    int qtd=0;
+    while(f->ini != NULL)
+    {
+        menor=v[0];
+        j=0;
+        for(int i=0; i<c; i++)
+        {
+            if(menor>v[i])
+            {
+                menor=v[i];
+                j=i;
+            }
+        }
+        menor=menor-consulta_inicio(f);
+        //printf("tempo que cada cliente atendido: %d\n", menor);
+ 
+        if(menor>=20)
+            {
+              // printf("inicio da fila: %d %d \n", consulta_inicio(f), consulta_inicio2(f));
+                qtd++;
+            }
+        v[j]+= consulta_inicio2(f);
+        dequeue(f);
+    }
+    printf("%d\n", qtd);
+ 
+   // printf("inicio da fila: %d %d \n", consulta_inicio(f), consulta_inicio2(f));
+   // dequeue(f);
+   // printf("saiu:\n");
+ 
+   // printf("inicio da fila: %d %d \n", consulta_inicio(f), consulta_inicio2(f));
+ 
+    f = libera_fila(f);
+ 
+    return 0;
+}
+ 
+Fila* cria_fila() {
+    Fila *f = cria_listad();
+    return f;
+}
+ 
+void enqueue(Fila *f, int valor, int valor2) {
+    insere_fim_listad(valor,valor2, f);
+}
+ 
+Nod* dequeue(Fila *f) {
+    return remove_inicio(f);
+}
+ 
+int consulta_inicio(Fila *f) {
+    return inicio(f);
+}
+int consulta_inicio2(Fila *f) {
+    return inicio2(f);
+}
+ 
+int fila_vazia(Fila *f) {
+    return f->ini == NULL;
+}
+ 
+Fila* libera_fila(Fila *f) {
+    libera_listad(f);
+    return NULL;
+}
+ 
+Listad* cria_listad() {
+    Listad *L = (Listad*)malloc(sizeof(Listad));
+    L->ini = L->fim = NULL;
+    return L;
+}
+ 
+Nod* cria_nod(int info, int info2) {
+    Nod *novo = (Nod*)malloc(sizeof(Nod));
+    novo->info = info;
+    novo->info2 = info2;
+    novo->ant = novo->prox = NULL;
+    return novo;
+}
+ 
+/*void insere_inicio_listad(int info, Listad *L) {
+    Nod *novo = cria_nod(info);
+ 
+    if (L->ini == NULL) {
+        L->ini = L->fim = novo;
+    } else {
+        novo->prox = L->ini;
+        L->ini->ant = novo;
+        L->ini = novo;
+    }
+}*/
+ 
+void insere_fim_listad(int info,int info2, Listad *L) {
+    Nod *novo = cria_nod(info,info2);
+ 
+    if (L->ini == NULL) {
+        L->ini = L->fim = novo;
+    } else {
+        novo->ant = L->fim;
+        L->fim->prox = novo;
+        L->fim = novo;
+    }
+}
+ 
+void mostra_listad(Listad *L) {
+    Nod *aux = L->ini;
+ 
+    while (aux != NULL) {
+        printf("%d ", aux->info);
+        aux = aux->prox;
+    }
+}
+ 
+Listad* libera_listad(Listad *L) {
+    Nod *aux;
+ 
+    while (L->ini != NULL) {
+        aux = L->ini;
+        L->ini = L->ini->prox;
+        free(aux);
+    }
+    free(L);
+    return NULL;
+}
+ 
+Nod* remove_inicio(Listad *L) {
+    Nod *aux = NULL;
+    if (L != NULL && L->fim != NULL) { // caso haja elemento
+        aux = L->ini;
+        if (L->ini == L->fim) {
+            L->ini = L->fim = NULL;
+        } else {
+            L->ini = L->ini->prox;
+            L->ini->ant = NULL;
+        }
+    }
+    return aux;
+}
+ 
+int inicio(Listad *L) { // consulta inicio
+    int valor_inicio = -1;
+    if (L != NULL && L->fim != NULL) { // caso haja elemento
+        valor_inicio = L->ini->info;
+    }
+    return valor_inicio;
+}
+int inicio2(Listad *L) { // consulta inicio
+    int valor_inicio = -1;
+    if (L != NULL && L->fim != NULL) { // caso haja elemento
+        valor_inicio = L->ini->info2;
+    }
+    return valor_inicio;
+}
+ 
