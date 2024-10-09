@@ -1,0 +1,29 @@
+#include <stdio.h>
+#include <stdlib.h>
+ 
+int main()
+{
+    int v[9]={1,2,6,24,120,720,5040,40320,362880};
+    int i, qtd=0,n=0;
+    scanf("%d", &n);
+ 
+    for(i=8; i>=0 && n!=0; i--)
+    {
+ 
+        if(v[i]>n && v[i-1]<=n)
+        {
+            qtd++;
+            n-=v[i-1];
+ 
+        }
+        while(v[i-1]<=n)
+            {
+ 
+                qtd++;
+                n-=v[i-1];
+            }
+    }
+    printf("%d", qtd);
+    return 0;
+}
+ 
