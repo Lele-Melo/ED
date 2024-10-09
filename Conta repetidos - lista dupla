@@ -1,0 +1,192 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+struct no
+{
+    int info2;
+    char letra;
+    struct no *prox;
+};
+typedef struct no No;
+struct nod
+{
+    char info;
+    struct nod *anterior;
+    struct nod *proximo;
+};
+typedef struct nod Nod;
+ 
+struct listad
+{
+    Nod *inicio;
+    Nod *fim;
+};
+typedef struct listad Listad;
+ 
+Listad *cria_lista();
+void insere_fim(Listad *L, char valor);
+void mostra(Listad *L);
+void liberarLista(Listad *L);
+void ordena(Listad *L);
+No *insere_fim2 (No *a, char letra, int num);
+No *cria_no(char letra, int valor);
+void mostra_lista(No *L);
+void lista2(Listad *L);
+ 
+int main()
+{
+    int n =0;
+    int num =0;
+    char letra[101];
+    scanf("%d", &n);
+    for(int i=0; i<n; i++)
+    {
+        Listad *L = cria_lista();
+       // fflush(stdin);
+        getchar();
+        //gets(letra);
+        scanf("%s", letra);
+        num = strlen(letra);
+        for(int i=0; i<num; i++)
+        {
+            insere_fim(L,letra[i]);
+        }
+        ordena(L);
+        lista2(L);
+        //mostra(L);
+        liberarLista(L);
+        free(L);
+        //if(i+1 != n)
+        //printf("\n");
+ 
+    }
+   // mostra(L);
+    return 0;
+}
+void lista2(Listad *L)
+{
+   int qtd =1;
+    No *a= NULL;
+    Nod *aux = L->inicio;
+    while(aux != NULL)
+    {
+        if (aux->proximo != NULL && aux->info == aux->proximo->info)
+        {
+            qtd++;
+        }
+        else
+        {
+            //printf("%d\n", qtd);
+            a = insere_fim2(a, aux->info, qtd);
+            qtd = 1;
+        }
+        aux = aux->proximo;
+    }
+    mostra_lista(a);
+}
+void ordena(Listad *L)
+{
+    Nod *i, *j;
+    char aux;
+    for(i=L->inicio; i!=NULL; i=i->proximo)
+    {
+        for(j=i->proximo; j!=NULL; j=j->proximo)
+        {
+            if(i->info > j->info)
+            {
+                aux = i->info;
+                i->info = j->info;
+                j->info = aux;
+            }
+        }
+    }
+    //mostra(L);
+}
+No *cria_no(char letra, int valor)
+{
+    No *novo;
+    novo = (No *)malloc(sizeof(No));
+ 
+    // inicializar campos
+    novo->prox = NULL;
+    novo->info2 = valor;
+    novo->letra = letra;
+ 
+    return novo;
+}
+No *insere_fim2 (No *a, char letra, int num)
+{
+    No *novo= cria_no(letra, num);
+    No *aux=a;
+    if (a == NULL)
+    {
+        a = novo;
+    }
+    else
+    {
+        while(aux -> prox !=NULL)
+        {
+            aux= aux->prox;
+        }
+        aux ->prox =novo;
+    }
+    return a;
+ 
+}
+void liberarLista(Listad *L)
+{
+    int qtd =0;
+    Nod *aux = L->inicio;
+    while(aux != NULL)
+    {
+        free(aux->anterior);
+        aux=aux->proximo;
+        qtd++;
+    }
+    //printf("\n\nlista destruida %d", qtd);
+}
+void insere_fim(Listad *L, char valor)
+{
+    Nod *novo = (Nod*)malloc(sizeof(Nod));
+    novo ->info = valor;
+    novo ->anterior = L->fim;
+    novo ->proximo = NULL;
+ 
+    if(L ->inicio == NULL)
+    {
+        L->inicio =novo;
+    }
+    else
+    {
+        L->fim->proximo = novo;
+    }
+    L->fim =novo;
+ 
+}
+Listad *cria_lista()
+{
+    Listad *L = (Listad*)malloc(sizeof(Listad));
+    L ->inicio = L->fim = NULL;
+    return L;
+}
+void mostra(Listad *L)
+{
+    Nod *aux = L->inicio;
+    while(aux != NULL)
+    {
+        printf("%c ", aux->info);
+        aux=aux->proximo;
+    }
+    printf("\n");
+}
+void mostra_lista(No *L)
+{
+ 
+    while (L != NULL)
+    {
+        printf("%c %d \n", L->letra, L->info2);
+        L = L->prox;
+ 
+    }
+}
+ 
