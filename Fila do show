@@ -1,0 +1,177 @@
+#include <stdio.h>
+#include <stdlib.h>
+ 
+struct nod {
+    int info;
+    struct nod *prox;
+    struct nod *ant;
+};
+typedef struct nod Nod;
+ 
+struct listad {
+    Nod *ini, *fim;
+};
+typedef struct listad Listad;
+typedef Listad Fila;
+ 
+Fila* cria_fila();
+void enqueue(Fila *f, int valor);
+Nod* dequeue(Fila *f);
+int consulta_inicio(Fila *f);
+int fila_vazia(Fila *f);
+Fila* libera_fila(Fila *f);
+Listad* cria_listad();
+Nod* cria_nod(int info);
+void insere_inicio_listad(int info, Listad *L);
+void insere_fim_listad(int info, Listad *L);
+void mostra_listad(Listad *L);
+Listad* libera_listad(Listad *L);
+Nod* remove_inicio(Listad *L);
+int inicio(Listad *L);
+ 
+int main() {
+    Fila *f = cria_fila();
+    int n=0, m=0, n2=0, qtd=0;
+    scanf("%d", &n);
+    for(int i=0; i<n; i++)
+    {
+        scanf("%d", &m);
+       enqueue(f, m);
+    }
+    scanf("%d", &n2);
+    int v[n2];
+    for(int i=0; i<n2; i++)
+    {
+        scanf("%d", &v[i]);
+    }
+    for(int i=0; i<n; i++)
+    {
+        for(int j=0; j<n2; j++)
+        {
+            if(v[j] == consulta_inicio(f))
+                qtd++;
+        }
+        if(qtd == 0)
+            printf("%d ",consulta_inicio(f));
+        qtd=0;
+        dequeue(f);
+    }
+    printf("\n");
+ 
+   /* printf("inicio da fila: %d\n", consulta_inicio(f));
+ 
+    printf("saiu: %d\n", dequeue(f)->info);
+ 
+    printf("inicio da fila: %d\n", consulta_inicio(f));*/
+ 
+    f = libera_fila(f);
+ 
+    return 0;
+}
+ 
+Fila* cria_fila() {
+    Fila *f = cria_listad();
+    return f;
+}
+ 
+void enqueue(Fila *f, int valor) {
+    insere_fim_listad(valor, f);
+}
+ 
+Nod* dequeue(Fila *f) {
+    return remove_inicio(f);
+}
+ 
+int consulta_inicio(Fila *f) {
+    return inicio(f);
+}
+ 
+int fila_vazia(Fila *f) {
+    return f->ini == NULL;
+}
+ 
+Fila* libera_fila(Fila *f) {
+    libera_listad(f);
+    return NULL;
+}
+ 
+Listad* cria_listad() {
+    Listad *L = (Listad*)malloc(sizeof(Listad));
+    L->ini = L->fim = NULL;
+    return L;
+}
+ 
+Nod* cria_nod(int info) {
+    Nod *novo = (Nod*)malloc(sizeof(Nod));
+    novo->info = info;
+    novo->ant = novo->prox = NULL;
+    return novo;
+}
+ 
+void insere_inicio_listad(int info, Listad *L) {
+    Nod *novo = cria_nod(info);
+ 
+    if (L->ini == NULL) {
+        L->ini = L->fim = novo;
+    } else {
+        novo->prox = L->ini;
+        L->ini->ant = novo;
+        L->ini = novo;
+    }
+}
+ 
+void insere_fim_listad(int info, Listad *L) {
+    Nod *novo = cria_nod(info);
+ 
+    if (L->ini == NULL) {
+        L->ini = L->fim = novo;
+    } else {
+        novo->ant = L->fim;
+        L->fim->prox = novo;
+        L->fim = novo;
+    }
+}
+ 
+void mostra_listad(Listad *L) {
+    Nod *aux = L->ini;
+ 
+    while (aux != NULL) {
+        printf("%d ", aux->info);
+        aux = aux->prox;
+    }
+}
+ 
+Listad* libera_listad(Listad *L) {
+    Nod *aux;
+ 
+    while (L->ini != NULL) {
+        aux = L->ini;
+        L->ini = L->ini->prox;
+        free(aux);
+    }
+    free(L);
+    return NULL;
+}
+ 
+Nod* remove_inicio(Listad *L) {
+    Nod *aux = NULL;
+    if (L != NULL && L->fim != NULL) { // caso haja elemento
+        aux = L->ini;
+        if (L->ini == L->fim) {
+            L->ini = L->fim = NULL;
+        } else {
+            L->ini = L->ini->prox;
+            L->ini->ant = NULL;
+        }
+    }
+    return aux;
+}
+ 
+int inicio(Listad *L) { // consulta inicio
+    int valor_inicio = -1;
+    if (L != NULL && L->fim != NULL) { // caso haja elemento
+        valor_inicio = L->ini->info;
+    }
+    return valor_inicio;
+}
+ 
