@@ -1,0 +1,71 @@
+#include <stdio.h>
+#include <stdlib.h>
+ 
+struct nod {
+    int info;
+    struct nod *anterior;
+    struct nod *proximo;
+};
+typedef struct nod Nod;
+ 
+struct listad
+{
+    Nod *inicio;
+    Nod *fim;
+};
+typedef struct listad Listad;
+ 
+Listad *cria_lista();
+void insere_fim(Listad *L, int valor);
+void mostra(Listad *L);
+ 
+int main()
+{
+    Listad *L = cria_lista();
+    int n =0;
+    int num =0;
+    scanf("%d", &n);
+    for(int i=0; i<n; i++)
+    {
+        scanf("%d", &num);
+        insere_fim(L,num);
+    }
+    mostra(L);
+    return 0;
+}
+void insere_fim(Listad *L, int valor)
+{
+    Nod *novo = (Nod*)malloc(sizeof(Nod));
+    novo ->info = valor;
+    novo ->anterior = L->fim;
+    novo ->proximo = NULL;
+ 
+    if(L ->inicio == NULL)
+    {
+        L->inicio =novo;
+    }
+    else
+    {
+        L->fim->proximo = novo;
+    }
+    L->fim =novo;
+ 
+}
+Listad *cria_lista()
+{
+    Listad *L = (Listad*)malloc(sizeof(Listad));
+    L ->inicio = L->fim = NULL;
+    return L;
+}
+ 
+void mostra(Listad *L)
+{
+    Nod *aux2 = L->fim;
+    while(aux2 != NULL)
+    {
+        printf("%d ", aux2->info);
+        aux2 =aux2->anterior;
+    }
+    printf("\n");
+}
+ 
